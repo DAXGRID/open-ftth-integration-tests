@@ -41,37 +41,30 @@ namespace MemoryGraph
                 throw new NotSupportedException("Non unique id not allowed: " + edge.Id);
 
             _dublicateKeyCheck.Add(edge.Id);
-
             
             //var edge = new Edge() { Id = id };
             _graph.Edges.Add(edge.Id, edge);
 
             // Create or get start node
-            var startNode = CreateOrGetNode(Guid.NewGuid(), startX, startY);
+            var startNode = GetNode(startX, startY);
 
             if (startNode == null)
                 throw new NotSupportedException("Error looking up start node (" + startX + " " + startY + ") of link with id: " + edge.Id);
 
             startNode.Edges.Add(edge);
             edge.StartNode = startNode;
-
-            if (!_graph.Nodes.ContainsKey(startNode.Id))
-                _graph.Nodes.Add(startNode.Id, startNode);
-
+          
             // Create or get end node
-            var endNode = CreateOrGetNode(Guid.NewGuid(), endX, endY);
+            var endNode = GetNode(endX, endY);
 
             if (endNode == null)
                 throw new NotSupportedException("Error looking up end node (" + endX + " " + endY + ") of link with id: " + edge.Id);
 
             endNode.Edges.Add(edge);
             edge.EndNode = endNode;
-
-            if (!_graph.Nodes.ContainsKey(endNode.Id))
-                _graph.Nodes.Add(endNode.Id, endNode);
         }
 
-        private Node CreateOrGetNode(Guid nodeId, double x, double y)
+        private Node GetNode(double x, double y)
         {
             string key = Math.Round(x, 6) + ":" + Math.Round(y, 6);
 
@@ -79,6 +72,7 @@ namespace MemoryGraph
             {
                 return _nodeLookupByCoord[key];
             }
+            /*
             else
             {
                 if (_autoNodeCreation)
@@ -92,6 +86,9 @@ namespace MemoryGraph
                     return null;
                 }
             }
+            */
+
+            return null;
         }
 
         private Node AddNode(Node node, double x, double y)
@@ -101,6 +98,9 @@ namespace MemoryGraph
             node.IsAutoCreated = false;
 
             _nodeLookupByCoord.Add(key, node);
+
+            _graph.Nodes.Add(node.Id, node);
+
             return node;
         }
 

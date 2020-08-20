@@ -38,7 +38,7 @@ namespace DemoDataBuilder.Builders
             ImportRouteSegments(graphBuilder);
         }
 
-        public Graph RouteGraph => RouteGraph;
+        public Graph RouteGraph => _routeGraph;
 
         private void ImportRouteNodes(Wgs84GraphBuilder graphBuilder)
         {
