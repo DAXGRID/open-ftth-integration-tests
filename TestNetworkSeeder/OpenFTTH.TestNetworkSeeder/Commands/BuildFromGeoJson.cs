@@ -65,7 +65,7 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
             Guid stopRouteSegmentGuid = routeNetworkBuilder.RouteGraph.Edges.Values.ToList().Last().Id;
 
 
-            long timeoutMs = 1000 * 60 * 2; // Wait 2 minutes, before giving up
+            long timeoutMs = 1000 * 60 * 1; // Wait 1 minute, before giving up recieving route network events from topic
 
             bool timedOut = eventFetcher.WaitForEvents(
                 start => start is RouteNodeAdded && ((RouteNodeAdded)start).NodeId == startRouteNodeGuid,
@@ -74,6 +74,7 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
                 ).Result;
 
             
+            // Check if event fetches is timed out
             if (timedOut)
             {
                 LogErrorAndThrowException($"Seeding of test network failed. Timeout ({timeoutMs} ms) exceded waiting for events to arrive on route network topic.");
@@ -81,10 +82,10 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
             
             var events = eventFetcher.Events.ToList();
 
-            // Check if GDB integrator has added the right amount of events to topic
+            // Check if GDB integrator has put the right amount of events in the route network event topic
             if (events.Count != (graph.Nodes.Count + graph.Edges.Count))
             {
-                Log.Error($"Seeding of test network failed. {(graph.Nodes.Count + graph.Edges.Count)} number of nodes and routes were inserted into Postgres. Expected the same amount of events inserted into the route network topic by GDB integrator, but got {events.Count} events!");
+                LogErrorAndThrowException($"Seeding of test network failed. {(graph.Nodes.Count + graph.Edges.Count)} number of nodes and routes were inserted into Postgres. Expected the same amount of events inserted into the route network topic by GDB integrator, but got {events.Count} events!");
             }
 
 
