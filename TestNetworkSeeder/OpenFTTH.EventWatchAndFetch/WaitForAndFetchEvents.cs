@@ -4,6 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenFTTH.Events.RouteNetwork;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Topos.Config;
@@ -29,6 +32,7 @@ namespace OpenFTTH.EventWatchAndFetch
         private EventConsumer<BaseEventType> _eventConsumer;
 
 
+
         public WaitForAndFetchEvents(ILoggerFactory loggerFactory, string kafkaServer, string topicName)
         {
             _loggerFactory = loggerFactory;
@@ -37,7 +41,7 @@ namespace OpenFTTH.EventWatchAndFetch
             _logger = new Logger<WaitForAndFetchEvents<BaseEventType>>(_loggerFactory);
         }
 
-        public async Task WaitForEvents(Predicate<BaseEventType> startCriteria, Predicate<BaseEventType> stopCriteria)
+        public async Task<bool> WaitForEvents(Predicate<BaseEventType> startCriteria, Predicate<BaseEventType> stopCriteria, long timeoutMilisecond)
         {
             var eventObservable = new ToposTypedEventObservable<BaseEventType>(new Logger<ToposTypedEventMediator<BaseEventType>>(_loggerFactory));
 
@@ -51,9 +55,18 @@ namespace OpenFTTH.EventWatchAndFetch
 
             await _eventConsumer.StartAsync(stoppingToken);
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(2000, stoppingToken);
+
+                if (watch.ElapsedMilliseconds > timeoutMilisecond)
+                {
+                    tokenSource.Cancel();
+                    return true;
+                }
 
                 if (_eventObserver.StartCriteriaMeet)
                     _logger.LogDebug("Start criterie meet!");
@@ -65,8 +78,20 @@ namespace OpenFTTH.EventWatchAndFetch
                     tokenSource.Cancel();
                 }
 
-                _logger.LogDebug("Waiting... for the miracle to come.");
+                _logger.LogDebug("Waiting for criterias to be meet...");
+            }
 
+            return false;
+        }
+
+        public IEnumerable<BaseEventType> Events
+        {
+            get
+            {
+                if (_eventObserver != null)
+                    return _eventObserver.Events;
+                else
+                    return new List<BaseEventType>();
             }
         }
 

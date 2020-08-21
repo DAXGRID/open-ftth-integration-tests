@@ -18,6 +18,8 @@ namespace OpenFTTH.EventWatchAndFetch
 
         private bool _stopCriteriaMeet = false;
 
+        public IEnumerable<BaseEventType> Events => _events;
+
 
         public virtual void Subscribe(IObservable<BaseEventType> provider, Predicate<BaseEventType> startCriteria, Predicate<BaseEventType> stopCriteria)
         {

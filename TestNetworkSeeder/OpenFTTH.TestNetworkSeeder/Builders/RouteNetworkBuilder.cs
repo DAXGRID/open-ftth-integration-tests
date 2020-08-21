@@ -25,7 +25,7 @@ namespace DemoDataBuilder.Builders
         private string _nodeIdPrefix = "0b2168f2-d9be-455c-a4de-e9169f";
         private string _segmentIdPrefix = "b95000fb-425d-4cd3-9f45-66e8c5";
 
-        public void Run(string routeNodeFilename, string routeSegmentFilename, RouteNetworkDatastore routeNetworkDatestore)
+        public RouteNetworkBuilder Run(string routeNodeFilename, string routeSegmentFilename, RouteNetworkDatastore routeNetworkDatestore)
         {
             _routeNodeFilename = routeNodeFilename;
             _routeSegmentFilename = routeSegmentFilename;
@@ -36,6 +36,8 @@ namespace DemoDataBuilder.Builders
 
             ImportRouteNodes(graphBuilder);
             ImportRouteSegments(graphBuilder);
+
+            return this;
         }
 
         public Graph RouteGraph => _routeGraph;

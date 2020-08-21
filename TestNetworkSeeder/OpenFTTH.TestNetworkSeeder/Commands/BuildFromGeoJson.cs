@@ -54,8 +54,9 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
 
             var routeNetworkDatastore = new RouteNetworkDatastore(PostgresConnectionString);
 
-            var routeNetworkBuilder = new RouteNetworkBuilder();
-            routeNetworkBuilder.Run(Nodefilename, SegmentFilename, routeNetworkDatastore);
+            var routeNetworkBuilder = new RouteNetworkBuilder().Run(Nodefilename, SegmentFilename, routeNetworkDatastore);
+
+            var graph = routeNetworkBuilder.RouteGraph;
 
             using var eventFetcher = new WaitForAndFetchEvents<RouteNetworkEvent>(loggerFactory, KafkaServer, RouteNetworkTopicName);
 
@@ -63,15 +64,39 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
 
             Guid stopRouteSegmentGuid = routeNetworkBuilder.RouteGraph.Edges.Values.ToList().Last().Id;
 
-            eventFetcher.WaitForEvents(
-                start => start is RouteNodeAdded && ((RouteNodeAdded)start).NodeId == startRouteNodeGuid, 
-                stop => stop is RouteSegmentAdded && ((RouteSegmentAdded)stop).SegmentId == stopRouteSegmentGuid
-                ).Wait();
+
+            long timeoutMs = 1000 * 60 * 2; // Wait 2 minutes, before giving up
+
+            bool timedOut = eventFetcher.WaitForEvents(
+                start => start is RouteNodeAdded && ((RouteNodeAdded)start).NodeId == startRouteNodeGuid,
+                stop => stop is RouteSegmentAdded && ((RouteSegmentAdded)stop).SegmentId == stopRouteSegmentGuid,
+                timeoutMs
+                ).Result;
+
+            
+            if (timedOut)
+            {
+                LogErrorAndThrowException($"Seeding of test network failed. Timeout ({timeoutMs} ms) exceded waiting for events to arrive on route network topic.");
+            }
+            
+            var events = eventFetcher.Events.ToList();
+
+            // Check if GDB integrator has added the right amount of events to topic
+            if (events.Count != (graph.Nodes.Count + graph.Edges.Count))
+            {
+                Log.Error($"Seeding of test network failed. {(graph.Nodes.Count + graph.Edges.Count)} number of nodes and routes were inserted into Postgres. Expected the same amount of events inserted into the route network topic by GDB integrator, but got {events.Count} events!");
+            }
+
 
             Thread.Sleep(50000);
 
 
+        }
 
+        private void LogErrorAndThrowException(string message)
+        {
+            Log.Error(message);
+            throw new GoCommandoException(message);
         }
     }
 }
