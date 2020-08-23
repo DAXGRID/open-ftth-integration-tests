@@ -18,7 +18,6 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
         public Scenario01(ILoggerFactory loggerFactory, string postgresConnectionString, string kafkaServer, string routeNetworkTopicName) 
             : base(loggerFactory, postgresConnectionString, kafkaServer, routeNetworkTopicName)
         {
-
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
                 LifecycleInfo = new LifecycleInfo(DeploymentStateEnum.InService, DateTime.Now, DateTime.Now),
                 MappingInfo = new MappingInfo(MappingMethodEnum.LandSurveying, "10 cm", "20 cm", DateTime.Now, "Surveyed with GPS"),
                 NamingInfo = new NamingInfo("Route segment", "I'm an underground route segment"),
-                SafetyInfo = new SafetyInfo("no danger", "might contain gophers"),
+                SafetyInfo = new SafetyInfo("No real danger, unless you're afraid of gophers", "Might contain gophers"),
             };
 
             _routeNetworkDatastore.InsertRouteSegment(routeSegment);
@@ -58,7 +57,6 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
 
             if (events.Count != 3)
             {
-                allTestsWentOk = false;
                 Log.Error($"Expected 3 events, but got {events.Count}");
                 return Fail();
             }
@@ -70,22 +68,19 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
                 {
                     var routeNodeAdded = events[0] as RouteNodeAdded;
 
-                    allTestsWentOk = CheckApplicationName(routeNodeAdded, "GDB_INTEGRATOR");
-                    allTestsWentOk = CheckCmdType(routeNodeAdded, "NewRouteSegmentDigitized");
-                    allTestsWentOk = CheckEventId(routeNodeAdded);
-                    allTestsWentOk = CheckEventType(routeNodeAdded, "RouteNodeAdded");
-                    allTestsWentOk = CheckEventTimestamp(routeNodeAdded, startTime);
-                    allTestsWentOk = CheckThatIsLastEventInCmdIsFalse(routeNodeAdded);
-                    allTestsWentOk = CheckNodeId(routeNodeAdded);
-                    allTestsWentOk = CheckThatWorkTaskMridIsTransferedToEvent(routeNodeAdded, routeSegment.WorkTaskMrid);
-                    allTestsWentOk = CheckThatUserNameIsTransferedToEvent(routeNodeAdded, routeSegment.Username);
+                    allTestsWentOk = CheckApplicationName(routeNodeAdded, "GDB_INTEGRATOR") ? allTestsWentOk : false;
+                    allTestsWentOk = CheckCmdType(routeNodeAdded, "NewRouteSegmentDigitized") ? allTestsWentOk : false;
+                    allTestsWentOk = CheckEventId(routeNodeAdded) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckEventTimestamp(routeNodeAdded, startTime) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckThatIsLastEventInCmdIsFalse(routeNodeAdded) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckNodeId(routeNodeAdded) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckThatWorkTaskMridIsTransferedToEvent(routeNodeAdded, routeSegment.WorkTaskMrid) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckThatUserNameIsTransferedToEvent(routeNodeAdded, routeSegment.Username) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckEventType(routeNodeAdded, "RouteNodeAdded") ? allTestsWentOk : false;
                 }
                 else
                     return Fail($"Expected that the first event was a route node added event, but got a: {events[0].GetType().Name}");
-
             }
-
-
 
 
             if (allTestsWentOk)
