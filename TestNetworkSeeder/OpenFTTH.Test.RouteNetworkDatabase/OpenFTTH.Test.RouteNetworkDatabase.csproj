@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="2.0.3" />
+    <PackageReference Include="Npgsql" Version="4.1.4" />
+    <PackageReference Include="OpenFTTH.Events" Version="1.0.7-alpha" />
+    <PackageReference Include="Proj.NET" Version="1.2.0" />
+    <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+  </ItemGroup>
+
+</Project>

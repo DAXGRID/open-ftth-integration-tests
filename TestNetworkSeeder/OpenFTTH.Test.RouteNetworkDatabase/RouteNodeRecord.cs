@@ -7,21 +7,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenFTTH.TestNetworkSeeder.Datastores
+namespace OpenFTTH.Test.RouteNetworkDatastore
 {
-    public class RouteSegmentRecord : Edge
+    public class RouteNodeRecord : Node
     {
         public Guid WorkTaskMrid { get; set; }
         public string Username { get; set; }
-        public string ApplicationName { get; set; }
-        public string ApplicationInfo { get; set; }
+        public virtual string ApplicationName { get; set; }
+        public virtual string ApplicationInfo { get; set; }
         public virtual bool MarkAsDeleted { get; set; }
         public virtual bool DeleteMe { get; set; }
         public LifecycleInfo LifecycleInfo { get; set; }
         public MappingInfo MappingInfo { get; set; }
         public SafetyInfo SafetyInfo { get; set; }
-        public RouteSegmentInfo RouteSegmentInfo { get; set; }
+        public RouteNodeInfo RouteNodeInfo { get; set; }
         public NamingInfo NamingInfo { get; set; }
+
         public byte[] Coord => new WKBWriter().Write(Geometry);
     }
 }

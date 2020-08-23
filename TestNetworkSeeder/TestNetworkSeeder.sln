@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAX.EventProcessing.Dispatc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAX.EventProcessing.Serialization", "..\..\csharp-util-event-processing\DAX.EventProcessing.Serialization\DAX.EventProcessing.Serialization.csproj", "{CE1821B8-6251-4540-A01F-24A30A78AB52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFTTH.RouteNetworkScenarioTester", "OpenFTTH.RouteNetworkScenarioTester\OpenFTTH.RouteNetworkScenarioTester.csproj", "{23DF59EE-BD23-48AD-ACC0-C75BDB08ECCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFTTH.Test.RouteNetworkDatabase", "OpenFTTH.Test.RouteNetworkDatabase\OpenFTTH.Test.RouteNetworkDatabase.csproj", "{4E838B74-B5F2-4B87-A95D-B333029A8281}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23DF59EE-BD23-48AD-ACC0-C75BDB08ECCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DF59EE-BD23-48AD-ACC0-C75BDB08ECCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DF59EE-BD23-48AD-ACC0-C75BDB08ECCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DF59EE-BD23-48AD-ACC0-C75BDB08ECCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E838B74-B5F2-4B87-A95D-B333029A8281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E838B74-B5F2-4B87-A95D-B333029A8281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E838B74-B5F2-4B87-A95D-B333029A8281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E838B74-B5F2-4B87-A95D-B333029A8281}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

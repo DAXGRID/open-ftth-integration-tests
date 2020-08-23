@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenFTTH.EventWatchAndFetch\OpenFTTH.EventWatchAndFetch.csproj" />
+    <ProjectReference Include="..\OpenFTTH.Test.RouteNetworkDatabase\OpenFTTH.Test.RouteNetworkDatabase.csproj" />
   </ItemGroup>
 
 </Project>

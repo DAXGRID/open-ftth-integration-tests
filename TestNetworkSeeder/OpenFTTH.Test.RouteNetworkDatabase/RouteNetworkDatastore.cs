@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenFTTH.TestNetworkSeeder.Datastores
+namespace OpenFTTH.Test.RouteNetworkDatastore
 {
     public class RouteNetworkDatastore
     {
@@ -15,70 +15,6 @@ namespace OpenFTTH.TestNetworkSeeder.Datastores
         {
             _postgresConnectionString = postgresConnectionString;
         }
-
-        /*
-
-        public void InsertNode(RouteNodeRecord node)
-        {
-            using (var connection = GetConnection())
-            {
-                var insertStmt = $@"
-                    INSERT INTO route_network.route_node(
-                    mrid,
-                    coord,
-                    work_task_mrid,
-                    user_name,
-                    application_name,
-                    application_info,
-                    marked_to_be_deleted,
-                    delete_me
-                    )
-                    VALUES(
-                    @id,
-                    ST_GeomFromWKB(@coord, 25832),
-                    '{_workTaskId}',
-                    '{_userName}',
-                    '{_applicationName}',
-                    '{_applicationInfo}',
-                    false,
-                    false
-                    );";
-
-                connection.Open();
-                connection.Execute(insertStmt, node);
-            }
-        }
-
-        public void InsertSegment(RouteSegmentRecord node)
-        {
-            using (var connection = GetConnection())
-            {
-                var insertStmt = $@"
-                    INSERT INTO route_network.route_segment(
-                    mrid,
-                    coord,
-                    work_task_mrid,
-                    user_name,
-                    application_name,
-                    marked_to_be_deleted,
-                    delete_me
-                    )
-                    VALUES(
-                    @id,
-                    ST_GeomFromWKB(@coord, 25832),
-                    '{_workTaskId}',
-                    '{_userName}',
-                    '{_applicationName}',
-                    false,
-                    false
-                    );";
-
-                connection.Open();
-                connection.Execute(insertStmt, node);
-            }
-        }
-        */
-
 
         public void InsertRouteNode(RouteNodeRecord routeNode)
         {

@@ -1,6 +1,6 @@
 ﻿using MemoryGraph;
 using OpenFTTH.Events.RouteNetwork;
-using OpenFTTH.TestNetworkSeeder.Datastores;
+using OpenFTTH.Test.RouteNetworkDatastore;
 using Serilog;
 using System;
 using System.Collections.Generic;

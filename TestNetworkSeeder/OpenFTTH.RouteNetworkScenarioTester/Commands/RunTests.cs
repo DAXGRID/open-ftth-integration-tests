@@ -1,29 +1,19 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using DemoDataBuilder.Builders;
 using GoCommando;
 using Microsoft.Extensions.Logging;
 using OpenFTTH.Events.RouteNetwork;
 using OpenFTTH.EventWatchAndFetch;
 using OpenFTTH.Test.RouteNetworkDatastore;
-using OpenFTTH.TestNetworkSeeder.Tests;
 using Serilog;
 
-namespace OpenFTTH.TestNetworkSeeder.Commands
+namespace OpenFTTH.RouteNetworkScenarioTester.Commands
 {
-    [Command("build-from-geojson", group: "import")]
-    [Description("Import/build network from two geojson files containing instructions how a test network should be built.")]
+    [Command("run-tests", group: "test")]
+    [Description("Run a bunch of route network test scenarios.")]
     public class BuildFromGeojson : ICommand
     {
-        [Parameter("nodeFilename")]
-        [Description("Node geojson file containing info on what route nodes should be built-")]
-        public string Nodefilename { get; set; }
-
-        [Parameter("segmentFilename")]
-        [Description("Segment geojson file containing info on what route segments should be built.")]
-        public string SegmentFilename { get; set; }
-
         [Parameter("postgresConnectionString")]
         [Description("Connection string to Postgres/PostGIS database where route network data should be created.")]
         public string PostgresConnectionString { get; set; }
@@ -53,12 +43,7 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
 
                 var startMarker = Guid.NewGuid();
                 var endMarker = Guid.NewGuid();
-
-                var routeNetworkBuilder = new RouteNetworkBuilder();
-                routeNetworkBuilder.Run(Nodefilename, SegmentFilename, routeNetworkDatastore, startMarker, endMarker);
-
-                var graph = routeNetworkBuilder.RouteGraph;
-
+         
                 using var eventFetcher = new WaitForAndFetchEvents<RouteNetworkEvent>(loggerFactory, KafkaServer, RouteNetworkTopicName);
       
                 long timeoutMs = 1000 * 60 * 1; // Wait 1 minute, before giving up recieving route network events from topic
@@ -78,18 +63,8 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
                     LogErrorAndThrowException($"Seeding of test network failed. Timeout ({timeoutMs} ms) exceded waiting for events to arrive on route network topic.");
                 }
 
-                // Check if GDB integrator has put the right amount of events in the route network event topic
-                if (events.Count != (graph.Nodes.Count + graph.Edges.Count))
-                {
-                    LogErrorAndThrowException($"Seeding of test network failed. {(graph.Nodes.Count + graph.Edges.Count)} number of nodes and routes were inserted into Postgres. Expected the same amount of events inserted into the route network topic by GDB integrator, but got {events.Count} events from topic!");
-                }
-
 
                 bool someTestFailed = false;
-
-                // Check that all properties we add to postgres is added to events etc.
-                if (!new CheckEventProperties().Run(graph, events))
-                    someTestFailed = true;
 
 
                 // Check if event fetcher timed out
