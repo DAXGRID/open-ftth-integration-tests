@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using OpenFTTH.Events.Core.Infos;
+using System.Linq;
 
 namespace DemoDataBuilder.Builders
 {
@@ -22,14 +24,23 @@ namespace DemoDataBuilder.Builders
 
         private RouteNetworkDatastore _routeNetworkDatestore;
 
+        private Guid _startMarker;
+        private Guid _endMarker;
+
         private string _nodeIdPrefix = "0b2168f2-d9be-455c-a4de-e9169f";
         private string _segmentIdPrefix = "b95000fb-425d-4cd3-9f45-66e8c5";
 
-        public RouteNetworkBuilder Run(string routeNodeFilename, string routeSegmentFilename, RouteNetworkDatastore routeNetworkDatestore)
+        private string _applicationName = "TestNetworkSeeder";
+        private string _userName = Environment.UserName;
+        private Guid _workTaskId = Guid.Parse("22f110e2-e132-4301-a7df-2f1cb85167e3");
+
+        public RouteNetworkBuilder Run(string routeNodeFilename, string routeSegmentFilename, RouteNetworkDatastore routeNetworkDatestore, Guid startMarker, Guid endMarker)
         {
             _routeNodeFilename = routeNodeFilename;
             _routeSegmentFilename = routeSegmentFilename;
             _routeNetworkDatestore = routeNetworkDatestore;
+            _startMarker = startMarker;
+            _endMarker = endMarker;
 
             // Create route nodes and segments
             var graphBuilder = new Wgs84GraphBuilder(_routeGraph);
@@ -50,6 +61,8 @@ namespace DemoDataBuilder.Builders
             var nodesJson = JsonConvert.DeserializeObject(nodesJsonText) as JObject;
 
             var features = nodesJson["features"];
+
+            bool firstNode = true;
 
             foreach (var feature in features)
             {
@@ -132,16 +145,52 @@ namespace DemoDataBuilder.Builders
                     nodeFunctionKind = RouteNodeFunctionEnum.CustomerPremisesPoint;
                 }
 
-                RouteNodeRecord routeNode = new RouteNodeRecord()
+                // On the first node, we set the start marker into applicaion info, and insert data into all the other propeties as well to test if every information is captured into the generated events
+                if (firstNode)
                 {
-                    Id = nodeId,
-                    Geometry = GeographicToProjectedCoordinateConverter.ConvertPoint(GeoJsonConversionHelper.ConvertFromPointGeoJson(geometryCoordinates)),
-                    Kind = nodeKind,
-                    Function = nodeFunctionKind
-                };
+                    RouteNodeRecord routeNode = new RouteNodeRecord()
+                    {
+                        Id = nodeId,
+                        WorkTaskMrid = _startMarker,
+                        ApplicationName = _applicationName,
+                        ApplicationInfo = _applicationName,
+                        DeleteMe = false,
+                        MarkAsDeleted = false,
+                        Username = _userName,
+                        Geometry = GeographicToProjectedCoordinateConverter.ConvertPoint(GeoJsonConversionHelper.ConvertFromPointGeoJson(geometryCoordinates)),
+                        RouteNodeInfo = new RouteNodeInfo(nodeKind, nodeFunctionKind),
+                        LifecycleInfo = new LifecycleInfo(DeploymentStateEnum.InService, DateTime.Now, DateTime.Now),
+                        MappingInfo = new MappingInfo(MappingMethodEnum.LandSurveying, "10 cm", "20 cm", DateTime.Now, "Surveyed with GPS"),
+                        NamingInfo = new NamingInfo(nodeName, "Route node"),
+                        SafetyInfo = new SafetyInfo("no danger", "might contain rats"),
+                        IsAutoCreated = false
+                    };
 
-                graphBuilder.AddNodeToGraph(routeNode, (double)x, (double)y);
-                _routeNetworkDatestore.InsertNode(routeNode);
+                    graphBuilder.AddNodeToGraph(routeNode, (double)x, (double)y);
+                    _routeNetworkDatestore.InsertRouteNode(routeNode);
+                }
+                else
+                {
+                    RouteNodeRecord routeNode = new RouteNodeRecord()
+                    {
+                        Id = nodeId,
+                        ApplicationName = _applicationName,
+                        ApplicationInfo = _applicationName,
+                        DeleteMe = false,
+                        MarkAsDeleted = false,
+                        Username = _userName,
+                        Geometry = GeographicToProjectedCoordinateConverter.ConvertPoint(GeoJsonConversionHelper.ConvertFromPointGeoJson(geometryCoordinates)),
+                        RouteNodeInfo = new RouteNodeInfo(nodeKind, nodeFunctionKind),
+                        NamingInfo = new NamingInfo(nodeName, "Route node"),
+                        IsAutoCreated = false
+                    };
+
+                    graphBuilder.AddNodeToGraph(routeNode, (double)x, (double)y);
+                    _routeNetworkDatestore.InsertRouteNode(routeNode);
+                }
+               
+
+                firstNode = false;
             }
         }
 
@@ -153,6 +202,13 @@ namespace DemoDataBuilder.Builders
             var segmentsJson = JsonConvert.DeserializeObject(segmentJsonText) as JObject;
 
             var features = segmentsJson["features"];
+
+            bool firstSegment = true;
+            bool lastSegment = false;
+
+            var numberOfSegmentFeatures = features.Count();
+
+            var segmentCounter = 1;
 
             foreach (var feature in features)
             {
@@ -190,15 +246,53 @@ namespace DemoDataBuilder.Builders
                     segmentKindCode = RouteSegmentKindEnum.Underground;
                 }
 
-                RouteSegmentRecord routeSegment = new RouteSegmentRecord()
+                // On the first node, we set the start marker into applicaion info, and insert data into all the other propeties as well to test if every information is captured into the generated events
+                if (firstSegment)
                 {
-                    Id = segmentId,
-                    Geometry = GeographicToProjectedCoordinateConverter.ConvertLineString(GeoJsonConversionHelper.ConvertFromLineGeoJson(geometryCoordinates)),
-                    Kind = segmentKindCode.Value
-                };
+                    RouteSegmentRecord routeSegment = new RouteSegmentRecord()
+                    {
+                        Id = segmentId,
+                        ApplicationName = _applicationName,
+                        ApplicationInfo = _applicationName,
+                        DeleteMe = false,
+                        MarkAsDeleted = false,
+                        Username = _userName,
+                        Geometry = GeographicToProjectedCoordinateConverter.ConvertLineString(GeoJsonConversionHelper.ConvertFromLineGeoJson(geometryCoordinates)),
+                        RouteSegmentInfo = new RouteSegmentInfo(RouteSegmentKindEnum.Underground, "50 cm", "90 cm"),
+                        LifecycleInfo = new LifecycleInfo(DeploymentStateEnum.InService, DateTime.Now, DateTime.Now),
+                        MappingInfo = new MappingInfo(MappingMethodEnum.LandSurveying, "10 cm", "20 cm", DateTime.Now, "Surveyed with GPS"),
+                        NamingInfo = new NamingInfo("Route segment", "I'm an underground route segment"),
+                        SafetyInfo = new SafetyInfo("no danger", "might contain gophers"),
+                    };
 
-                graphBuilder.AddEdgeToGraph(routeSegment, (double)startX, (double)startY, (double)endX, (double)endY);
-                _routeNetworkDatestore.InsertSegment(routeSegment);
+                    graphBuilder.AddEdgeToGraph(routeSegment, (double)startX, (double)startY, (double)endX, (double)endY);
+                    _routeNetworkDatestore.InsertRouteSegment(routeSegment);
+                }
+                else
+                {
+                    RouteSegmentRecord routeSegment = new RouteSegmentRecord()
+                    {
+                        Id = segmentId,
+                        ApplicationName = _applicationName,
+                        ApplicationInfo = _applicationName,
+                        DeleteMe = false,
+                        MarkAsDeleted = false,
+                        Username = _userName,
+                        Geometry = GeographicToProjectedCoordinateConverter.ConvertLineString(GeoJsonConversionHelper.ConvertFromLineGeoJson(geometryCoordinates)),
+                        RouteSegmentInfo = new RouteSegmentInfo(RouteSegmentKindEnum.Underground, "50 cm", "90 cm"),
+                    };
+
+                    // Mark last segment
+                    if (segmentCounter == numberOfSegmentFeatures)
+                        routeSegment.WorkTaskMrid = _endMarker;
+
+                    graphBuilder.AddEdgeToGraph(routeSegment, (double)startX, (double)startY, (double)endX, (double)endY);
+                    _routeNetworkDatestore.InsertRouteSegment(routeSegment);
+                }
+
+
+                firstSegment = false;
+                segmentCounter++;
             }
         }
     }

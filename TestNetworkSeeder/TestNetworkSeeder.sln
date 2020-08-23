@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFTTH.TestNetworkSeeder", "OpenFTTH.TestNetworkSeeder\OpenFTTH.TestNetworkSeeder.csproj", "{36A431D4-4E8B-42B4-BA3E-FE2DEE7AD614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFTTH.EventWatchAndFetch", "OpenFTTH.EventWatchAndFetch\OpenFTTH.EventWatchAndFetch.csproj", "{7E59B7C4-40C7-4721-BA51-97C0D3A0E59D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenFTTH.EventWatchAndFetch", "OpenFTTH.EventWatchAndFetch\OpenFTTH.EventWatchAndFetch.csproj", "{7E59B7C4-40C7-4721-BA51-97C0D3A0E59D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAX.EventProcessing.Dispatcher", "..\..\csharp-util-event-processing\DAX.EventProcessing.Dispatcher\DAX.EventProcessing.Dispatcher.csproj", "{B23FEDDB-0B09-4B0A-92A5-69D682E55D12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAX.EventProcessing.Serialization", "..\..\csharp-util-event-processing\DAX.EventProcessing.Serialization\DAX.EventProcessing.Serialization.csproj", "{CE1821B8-6251-4540-A01F-24A30A78AB52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{7E59B7C4-40C7-4721-BA51-97C0D3A0E59D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E59B7C4-40C7-4721-BA51-97C0D3A0E59D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E59B7C4-40C7-4721-BA51-97C0D3A0E59D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23FEDDB-0B09-4B0A-92A5-69D682E55D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23FEDDB-0B09-4B0A-92A5-69D682E55D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23FEDDB-0B09-4B0A-92A5-69D682E55D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23FEDDB-0B09-4B0A-92A5-69D682E55D12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1821B8-6251-4540-A01F-24A30A78AB52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

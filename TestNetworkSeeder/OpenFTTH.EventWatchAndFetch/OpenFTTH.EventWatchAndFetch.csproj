@@ -5,9 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DAX.EventProcessing.Dispatcher" Version="1.0.2-alpha" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.7" />
-    <PackageReference Include="OpenFTTH.Events" Version="1.0.4-alpha" />
+    <PackageReference Include="OpenFTTH.Events" Version="1.0.7-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\csharp-util-event-processing\DAX.EventProcessing.Dispatcher\DAX.EventProcessing.Dispatcher.csproj" />
+    <ProjectReference Include="..\..\..\csharp-util-event-processing\DAX.EventProcessing.Serialization\DAX.EventProcessing.Serialization.csproj" />
   </ItemGroup>
 
 </Project>
