@@ -1,12 +1,17 @@
-﻿using System;
+﻿using GoCommando;
+using System;
 
 namespace OpenFTTH.RouteNetworkScenarioTester
 {
+    [Banner(@"------------------------------
+OpenFTTH Route Network Scenario Tester
+------------------------------")]
+    [SupportImpersonation]
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Hello World!");
+            Go.Run();
         }
     }
 }

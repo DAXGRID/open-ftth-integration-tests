@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenFTTH.Events.RouteNetwork.Infos;
-using OpenFTTH.TestNetworkSeeder.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Text;
 using OpenFTTH.Events.Core.Infos;
 using System.Linq;
 using OpenFTTH.Test.RouteNetworkDatastore;
+using OpenFTTH.Test.Util;
 
 namespace DemoDataBuilder.Builders
 {

@@ -5,6 +5,7 @@ using GoCommando;
 using Microsoft.Extensions.Logging;
 using OpenFTTH.Events.RouteNetwork;
 using OpenFTTH.EventWatchAndFetch;
+using OpenFTTH.RouteNetworkScenarioTester.Tests;
 using OpenFTTH.Test.RouteNetworkDatastore;
 using Serilog;
 
@@ -37,49 +38,25 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Commands
             .WriteTo.Console()
             .CreateLogger();
 
-            try {
+            bool someTestFailed = false;
 
-                var routeNetworkDatastore = new RouteNetworkDatastore(PostgresConnectionString);
-
-                var startMarker = Guid.NewGuid();
-                var endMarker = Guid.NewGuid();
-         
-                using var eventFetcher = new WaitForAndFetchEvents<RouteNetworkEvent>(loggerFactory, KafkaServer, RouteNetworkTopicName);
-      
-                long timeoutMs = 1000 * 60 * 1; // Wait 1 minute, before giving up recieving route network events from topic
-
-                bool timedOut = eventFetcher.WaitForEvents(
-                    start => start.WorkTaskMrid.Equals(startMarker),
-                    stop => stop.WorkTaskMrid.Equals(endMarker),
-                    timeoutMs
-                    ).Result;
-
-
-                var events = eventFetcher.Events.ToList();
-
-                // Check if event fetcher timed out
-                if (timedOut)
-                {
-                    LogErrorAndThrowException($"Seeding of test network failed. Timeout ({timeoutMs} ms) exceded waiting for events to arrive on route network topic.");
-                }
-
-
-                bool someTestFailed = false;
-
-
-                // Check if event fetcher timed out
-                if (someTestFailed)
-                {
-                    LogErrorAndThrowException($"Seeding of test network failed. Please search the log for errors resulting from integration tests.");
-                }
-
-
+            try
+            {
+                if (!new Scenario01(loggerFactory, PostgresConnectionString, KafkaServer, RouteNetworkTopicName).Run())
+                    someTestFailed = true;
             }
             catch (Exception ex)
             {
-                Log.Error("Seeding of test network failed. Unhandled exception: " + ex.Message, ex);
+                Log.Error("Some route network integration tests failed.  Unhandled exception: " + ex.Message, ex);
                 throw ex;
             }
+
+            // If any test failed throw an exception
+            if (someTestFailed)
+            {
+                LogErrorAndThrowException($"Some route network integration tests failed. Please search the log for errors resulting from integration tests.");
+            }
+
 
         }
 

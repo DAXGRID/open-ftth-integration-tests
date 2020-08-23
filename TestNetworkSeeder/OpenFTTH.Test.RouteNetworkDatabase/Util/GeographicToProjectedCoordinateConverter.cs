@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenFTTH.TestNetworkSeeder.Util
+namespace OpenFTTH.Test.Util
 {
     public static class GeographicToProjectedCoordinateConverter
     {

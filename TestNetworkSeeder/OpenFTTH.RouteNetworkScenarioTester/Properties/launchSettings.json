@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OpenFTTH.RouteNetworkScenarioTester": {
+      "commandName": "Project",
+      "commandLineArgs": "run-tests -postgresConnectionString \"User ID=postgres;Password=postgres;Database=OPEN_FTTH;Server=116.203.155.79;Port=32192\" -kafkaServer 116.203.155.79:32010 -routeNetworkTopic event.route-network"
+    }
+  }
+}

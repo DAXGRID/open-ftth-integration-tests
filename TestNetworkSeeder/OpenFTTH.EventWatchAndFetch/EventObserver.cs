@@ -59,7 +59,8 @@ namespace OpenFTTH.EventWatchAndFetch
                     _events.Add(value); // We want the event that triggers start two
                 }
             }
-            else if (!_stopCriteriaMeet)
+            
+            if (!_stopCriteriaMeet)
             {
                 if (_stopCriteria.Invoke(value))
                     _stopCriteriaMeet = true;

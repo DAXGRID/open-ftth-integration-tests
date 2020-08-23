@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NetTopologySuite.Geometries;
 
-namespace OpenFTTH.TestNetworkSeeder.Util
+namespace OpenFTTH.Test.Util
 {
     public static class GeoJsonConversionHelper
     {
