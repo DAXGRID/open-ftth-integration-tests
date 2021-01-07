@@ -28,7 +28,7 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
         {
             Log.Information($"Scenario 1 test begun.");
 
-            DateTime startTime = DateTime.Now;
+            DateTime startTime = DateTime.UtcNow;
 
             Guid startMarker = Guid.NewGuid();
 
@@ -60,6 +60,9 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
                 Log.Error($"Expected 3 events, but got {events.Count}");
                 return Fail();
             }
+
+            // Snatch cmdId from the first event
+            Guid cmdId = events.First().CmdId;
             
             if (allTestsWentOk)
             {
@@ -68,15 +71,18 @@ namespace OpenFTTH.RouteNetworkScenarioTester.Tests
                 {
                     var routeNodeAdded = events[0] as RouteNodeAdded;
 
+                    // General route network event property checks
                     allTestsWentOk = CheckApplicationName(routeNodeAdded, "GDB_INTEGRATOR") ? allTestsWentOk : false;
                     allTestsWentOk = CheckCmdType(routeNodeAdded, "NewRouteSegmentDigitized") ? allTestsWentOk : false;
                     allTestsWentOk = CheckEventId(routeNodeAdded) ? allTestsWentOk : false;
+                    allTestsWentOk = CheckEventType(routeNodeAdded, "RouteNodeAdded") ? allTestsWentOk : false;
                     allTestsWentOk = CheckEventTimestamp(routeNodeAdded, startTime) ? allTestsWentOk : false;
                     allTestsWentOk = CheckThatIsLastEventInCmdIsFalse(routeNodeAdded) ? allTestsWentOk : false;
-                    allTestsWentOk = CheckNodeId(routeNodeAdded) ? allTestsWentOk : false;
                     allTestsWentOk = CheckThatWorkTaskMridIsTransferedToEvent(routeNodeAdded, routeSegment.WorkTaskMrid) ? allTestsWentOk : false;
                     allTestsWentOk = CheckThatUserNameIsTransferedToEvent(routeNodeAdded, routeSegment.Username) ? allTestsWentOk : false;
-                    allTestsWentOk = CheckEventType(routeNodeAdded, "RouteNodeAdded") ? allTestsWentOk : false;
+
+                    // Route node added specific tests
+                    allTestsWentOk = CheckNodeId(routeNodeAdded) ? allTestsWentOk : false;
                 }
                 else
                     return Fail($"Expected that the first event was a route node added event, but got a: {events[0].GetType().Name}");

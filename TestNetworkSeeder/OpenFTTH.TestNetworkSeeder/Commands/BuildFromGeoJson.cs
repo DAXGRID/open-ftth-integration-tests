@@ -39,11 +39,11 @@ namespace OpenFTTH.TestNetworkSeeder.Commands
         public void Run()
         {
             var loggerFactory = LoggerFactory.Create(builder => 
-            builder.AddConsole().SetMinimumLevel(LogLevel.Information)
+            builder.AddConsole().SetMinimumLevel(LogLevel.Debug)
             );
 
             Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy(new Serilog.Core.LoggingLevelSwitch(Serilog.Events.LogEventLevel.Information))
+            .MinimumLevel.ControlledBy(new Serilog.Core.LoggingLevelSwitch(Serilog.Events.LogEventLevel.Verbose))
             .WriteTo.Console()
             .CreateLogger();
 

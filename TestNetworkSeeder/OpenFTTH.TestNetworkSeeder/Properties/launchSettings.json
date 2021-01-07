@@ -2,7 +2,7 @@
   "profiles": {
     "OpenFTTH.TestNetworkSeeder": {
       "commandName": "Project",
-      "commandLineArgs": "build-from-geojson -nodeFilename C:\\projects\\OpenFTTH\\open-ftth-integration-tests\\TestData\\RouteNodes.geojson -segmentFilename C:\\projects\\OpenFTTH\\open-ftth-integration-tests\\TestData\\RouteSegments.geojson -postgresConnectionString \"User ID=postgres;Password=postgres;Database=OPEN_FTTH;Server=116.203.155.79;Port=32192\" -kafkaServer 116.203.155.79:32010 -routeNetworkTopic event.route-network"
+      "commandLineArgs": "build-from-geojson -nodeFilename C:\\projects\\OpenFTTH\\open-ftth-integration-tests\\TestData\\RouteNodes.geojson -segmentFilename C:\\projects\\OpenFTTH\\open-ftth-integration-tests\\TestData\\RouteSegments.geojson -postgresConnectionString \"User ID=postgres;Password=postgres;Database=OPEN_FTTH;Server=116.203.155.79;Port=31404\" -kafkaServer 116.203.155.79:32697 -routeNetworkTopic event.route-network"
     }
   }
 }
